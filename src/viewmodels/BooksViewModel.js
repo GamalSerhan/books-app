@@ -38,8 +38,22 @@ export const useBooksViewModel = () => {
     };
 
     const fetchBookDetails = async (id) => {
-        const book = await getBookById(id);
-        setSelectedBook(book);
+        setLoading(true);
+        try {
+            const response = await getBookById(id);
+            console.log(response.book); // Solo para verificar la respuesta en la consola
+            if (response.book) {
+                setSelectedBook(response.book);
+                
+            } else {
+                console.error("'Book' no se encontró en la respuesta");
+            }
+        } catch (error) {
+            console.error("Error fetching books:", error); 
+        } finally {
+            setLoading(false); 
+        }
+        console.log(selectedBook)
     };
 
     return {

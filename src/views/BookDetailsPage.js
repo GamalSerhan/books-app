@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, CircularProgress, Button, Box, Typography  } from '@mui/material';
+import { Container, CircularProgress, Button, Box, Typography } from '@mui/material';
 import { useBooksViewModel } from '../viewmodels/BooksViewModel';
 import BookDetailCard from '../components/BookDetailCard';
 
 const BookDetailPage = () => {
     const { id } = useParams(); 
-    const { books } = useBooksViewModel(); 
-    const [loading, setLoading] = useState(true); 
-    const [book, setBook] = useState(null); 
+    const { fetchBookDetails, selectedBook, loading } = useBooksViewModel(); 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        fetchBookDetails(id);
+    }, [id]); 
+
+   /*Encontrar el libro de forma local
     useEffect(() => {
         const foundBook = books.find((book) => book.id === id);
         if (foundBook) setBook(foundBook);
         setLoading(false);
-    }, [books, id]);
+    }, [books, id]);*/
 
     if (loading) return <Container><CircularProgress /></Container>;
 
-    if (!book) return <Typography>No book found!</Typography>;
+    if (!selectedBook) return <Typography>No book found!</Typography>; 
 
     return (
         <Container sx={{ py: 5, backgroundColor: '#f5f5f5' }}>
@@ -40,7 +43,7 @@ const BookDetailPage = () => {
                     Volver a la lista de libros
                 </Button>
             </Box>
-            <BookDetailCard book={book} />
+            <BookDetailCard book={selectedBook} /> {/* Usar el libro seleccionado */}
         </Container>
     );
 };
